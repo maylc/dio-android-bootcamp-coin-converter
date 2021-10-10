@@ -10,3 +10,5 @@ Awesome API ([link](https://docs.awesomeapi.com.br/api-de-moedas))
 ------
 
 Artigo "Injeção de dependência no Kotlin com Koin" ([link](https://medium.com/collabcode/inje%C3%A7%C3%A3o-de-depend%C3%AAncia-no-kotlin-com-koin-4d093f80cb63))
+
+QuickType.io ([link](https://app.quicktype.io/))
