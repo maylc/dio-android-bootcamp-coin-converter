@@ -1,4 +1,4 @@
-package io.github.maylcf.coinconverter
+package io.github.maylcf.coinconverter.ui
 
 import android.os.Bundle
 import android.widget.ArrayAdapter
