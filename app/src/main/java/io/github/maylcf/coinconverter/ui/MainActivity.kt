@@ -5,9 +5,9 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
-import io.github.maylcf.coinconverter.core.extensions.createDialog
-import io.github.maylcf.coinconverter.core.extensions.createProgressDialog
+import io.github.maylcf.coinconverter.core.extensions.*
 import io.github.maylcf.coinconverter.data.model.Coin
+import io.github.maylcf.coinconverter.data.model.ExchangeResponseValue
 import io.github.maylcf.coinconverter.databinding.ActivityMainBinding
 import io.github.maylcf.coinconverter.presentation.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -24,23 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         bindAdapters()
         bindListeners()
-
-        // Test Request
-        viewModel.getExchangeValue("USD-BRL")
-
-        viewModel.state.observe(this) {
-            when (it) {
-                MainViewModel.State.Loading -> dialog.show()
-                is MainViewModel.State.Error -> {
-                    dialog.dismiss()
-                    createDialog { setMessage(it.throwable.message) }.show()
-                }
-                is MainViewModel.State.Success -> {
-                    dialog.dismiss()
-                    Log.e("TAG", "onCreate: ${it.value}")
-                }
-            }
-        }
+        bindObserve()
     }
 
     private fun bindAdapters() {
@@ -60,7 +44,33 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnConverter.setOnClickListener {
-
+            it.hideSoftKeyboard()
+            val search = "${binding.tilFrom.text}-${binding.tilTo.text}"
+            viewModel.getExchangeValue(search)
         }
+    }
+
+    private fun bindObserve() {
+        viewModel.state.observe(this) {
+            when (it) {
+                is MainViewModel.State.Loading -> dialog.show()
+                is MainViewModel.State.Error -> {
+                    dialog.dismiss()
+                    createDialog { setMessage(it.throwable.message) }.show()
+                }
+                is MainViewModel.State.Success -> {
+                    dialog.dismiss()
+                    updateResult(it.value)
+                }
+            }
+        }
+    }
+
+    private fun updateResult(exchangeResult: ExchangeResponseValue) {
+        val selectedCoin = binding.tilTo.text
+        val coin = Coin.values().find { it.name == selectedCoin } ?: Coin.BRL
+
+        val result = exchangeResult.bid * binding.tilValue.text.toDouble()
+        binding.tvResult.text = result.formatCurrency(coin.locale)
     }
 }
