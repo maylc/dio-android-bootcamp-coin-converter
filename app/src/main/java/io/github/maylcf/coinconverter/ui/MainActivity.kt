@@ -1,7 +1,6 @@
 package io.github.maylcf.coinconverter.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
