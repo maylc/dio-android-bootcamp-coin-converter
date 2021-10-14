@@ -2,11 +2,13 @@ package io.github.maylcf.coinconverter.data.di
 
 import android.util.Log
 import com.google.gson.GsonBuilder
+import io.github.maylcf.coinconverter.data.database.AppDatabase
 import io.github.maylcf.coinconverter.data.repository.CoinRepository
 import io.github.maylcf.coinconverter.data.repository.CoinRepositoryImpl
 import io.github.maylcf.coinconverter.data.service.AwesomeService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidApplication
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -18,7 +20,7 @@ object DataModules {
     private const val HTTP_TAG = "OkHttp"
 
     fun load() {
-        loadKoinModules(networkModule() + repositoryModule())
+        loadKoinModules(networkModule() + repositoryModule() + databaseModule())
     }
 
     private fun networkModule(): Module {
@@ -48,6 +50,12 @@ object DataModules {
     private fun repositoryModule(): Module {
         return module {
             single<CoinRepository> { CoinRepositoryImpl(get()) }
+        }
+    }
+
+    private fun databaseModule(): Module {
+        return module {
+            single { AppDatabase.getInstance(androidApplication()) }
         }
     }
 
